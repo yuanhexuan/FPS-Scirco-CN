@@ -1,0 +1,26 @@
+* { box-sizing: border-box; }
+html, body, #root { margin: 0; padding: 0; width: 100%; height: 100%; background: #0a0a0a; color: #eee; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; overflow: hidden; }
+
+.hud { position: absolute; z-index: 10; pointer-events: none; }
+.hud button, .hud input { pointer-events: auto; }
+
+.card { background: #161616; border: 1px solid #222; border-radius: 8px; padding: 16px; }
+.grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+.row { display: flex; gap: 10px; align-items: center; }
+.vbox { display: flex; flex-direction: column; gap: 10px; }
+
+.btn { background: #2a2a2a; border: 1px solid #3a3a3a; color: #eee; padding: 8px 14px; border-radius: 6px; cursor: pointer; font-size: 14px; }
+.btn:hover { background: #333; }
+.btn.secondary { background: #1a1a1a; }
+
+.input { background: #111; border: 1px solid #333; color: #eee; padding: 8px 10px; border-radius: 6px; outline: none; font-size: 14px; width: 100%; }
+.input:focus { border-color: #555; }
+
+.team-ct { color: #6fb5ff; }
+.team-t  { color: #ffb471; }
+
+.kbd { background: #222; border: 1px solid #3a3a3a; border-radius: 4px; padding: 1px 6px; font-size: 12px; }
+
+.chatBox { background: #111; padding: 10px; border-radius: 6px; min-height: 60px; }
+
+@keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }

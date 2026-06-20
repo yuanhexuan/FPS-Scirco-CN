@@ -1,0 +1,10 @@
+{
+  "name": "fps-scirco/server",
+  "description": "FPS multiplayer server (Workerman + SQLite)",
+  "type": "project",
+  "require": {
+    "php": ">=7.4",
+    "workerman/workerman": "^4.1",
+    "firebase/php-jwt": "^6.10"
+  }
+}
