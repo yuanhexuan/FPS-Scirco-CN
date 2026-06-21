@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FPS Games Hub - scirco</title>
+    <link rel="icon" href="https://scirco.cn/imges.jpg" type="image/jpeg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* ===== Design Tokens (same as scirco) ===== */
+        :root {
+            --bg-primary: #0f172a;
+            --bg-secondary: #111827;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --border-primary: rgba(255,255,255,0.08);
+            --primary-400: #60a5fa;
+            --primary-500: #3b82f6;
+            --primary-600: #2563eb;
+            --secondary: #34d399;
+            --accent: #f472b6;
+            --gradient-brand: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            --glass-bg: rgba(17, 24, 39, 0.7);
+            --glass-bg-hover: rgba(30, 41, 59, 0.8);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --glass-border-hover: rgba(255, 255, 255, 0.16);
+            --glass-bg-strong: rgba(15, 23, 42, 0.95);
+            --radius-sm: 6px;
+            --radius-md: 10px;
+            --radius-lg: 14px;
+            --radius-xl: 20px;
+            --transition-base: 0.3s ease;
+            --shadow-sm: 0 2px 8px rgba(0,0,0,0.3);
+            --shadow-md: 0 8px 24px rgba(0,0,0,0.4);
+            --shadow-lg: 0 20px 48px rgba(0,0,0,0.5);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Inter Tight', 'Microsoft YaHei', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* ===== Video Background ===== */
+        .video-bg {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: -2;
+            object-fit: cover;
+        }
+        .video-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            background: linear-gradient(180deg, rgba(15,23,42,0.4) 0%, rgba(15,23,42,0.75) 100%);
+        }
+
+        /* ===== Floating Orbs ===== */
+        .bg-orbs {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: -1;
+            overflow: hidden;
+        }
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.12;
+            animation: orbFloat 20s ease-in-out infinite;
+        }
+        .orb-1 {
+            width: 600px; height: 600px;
+            background: #3b82f6;
+            top: -200px; left: -200px;
+            animation-duration: 25s;
+        }
+        .orb-2 {
+            width: 500px; height: 500px;
+            background: #8b5cf6;
+            top: 30%; right: -150px;
+            animation-duration: 30s;
+            animation-delay: -10s;
+        }
+        .orb-3 {
+            width: 400px; height: 400px;
+            background: #f97316;
+            bottom: -100px; left: 30%;
+            animation-duration: 20s;
+            animation-delay: -5s;
+        }
+        @keyframes orbFloat {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(40px, -60px) scale(1.1); }
+            66% { transform: translate(-30px, 40px) scale(0.95); }
+        }
+
+        /* ===== Navbar ===== */
+        .navbar {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 100;
+            backdrop-filter: blur(20px) saturate(180%);
+            -webkit-backdrop-filter: blur(20px) saturate(180%);
+            background: var(--glass-bg-strong);
+            border-bottom: 1px solid var(--border-primary);
+            padding: 0 2rem;
+            height: 64px;
+            display: flex;
+            align-items: center;
+        }
+        .navbar-container {
+            max-width: 1320px;
+            margin: 0 auto;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .navbar-brand {
+            font-family: 'Fraunces', serif;
+            font-weight: 700;
+            font-size: 1.4rem;
+            color: var(--text-primary);
+            text-decoration: none;
+            letter-spacing: -0.02em;
+        }
+        .navbar-brand span {
+            background: var(--gradient-brand);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .navbar-nav {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .nav-link {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.9rem;
+            padding: 0.5rem 0.75rem;
+            border-radius: var(--radius-sm);
+            transition: color var(--transition-base), background var(--transition-base);
+        }
+        .nav-link:hover {
+            color: var(--text-primary);
+            background: rgba(255,255,255,0.06);
+        }
+        .nav-link.active {
+            color: var(--primary-400);
+        }
+        .navbar-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 0.5rem 1rem;
+            background: rgba(59,130,246,0.1);
+            border: 1px solid rgba(59,130,246,0.2);
+            border-radius: var(--radius-md);
+            color: var(--primary-400);
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: all var(--transition-base);
+        }
+        .navbar-back:hover {
+            background: rgba(59,130,246,0.2);
+            border-color: rgba(59,130,246,0.4);
+        }
+        .navbar-menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+
+        /* ===== Buttons ===== */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 0.6rem 1.25rem;
+            border-radius: var(--radius-md);
+            font-size: 0.9rem;
+            font-weight: 500;
+            text-decoration: none;
+            cursor: pointer;
+            border: none;
+            transition: all var(--transition-base);
+            white-space: nowrap;
+        }
+        .btn-primary {
+            background: var(--gradient-brand);
+            color: #fff;
+            box-shadow: 0 4px 14px rgba(59,130,246,0.3);
+        }
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(59,130,246,0.4);
+        }
+        .btn-secondary {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            color: var(--text-primary);
+            backdrop-filter: blur(10px);
+        }
+        .btn-secondary:hover {
+            background: var(--glass-bg-hover);
+            border-color: var(--glass-border-hover);
+        }
+        .btn-gold {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: #0f172a;
+            font-weight: 600;
+        }
+
+        /* ===== Container ===== */
+        .container {
+            max-width: 1320px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* ===== Hero Section ===== */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8rem 2rem 5rem;
+            position: relative;
+        }
+        .hero-content {
+            max-width: 900px;
+            text-align: center;
+            animation: fadeInUp 1s ease forwards;
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 0.5rem 1.25rem;
+            background: rgba(249,115,22,0.12);
+            border: 1px solid rgba(249,115,22,0.25);
+            border-radius: 50px;
+            font-size: 0.85rem;
+            color: #fb923c;
+            margin-bottom: 2rem;
+            font-weight: 600;
+            font-family: 'JetBrains Mono', monospace;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+        .hero h1 {
+            font-family: 'Fraunces', serif;
+            font-size: clamp(2.8rem, 6vw, 5rem);
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+            letter-spacing: -0.03em;
+        }
+        .hero h1 em {
+            font-style: normal;
+            background: linear-gradient(135deg, #f97316 0%, #fbbf24 50%, #f97316 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .hero p {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin-bottom: 2.5rem;
+            line-height: 1.8;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        /* ===== Game Cards Section ===== */
+        .games-section {
+            padding: 5rem 2rem 8rem;
+            background: var(--bg-secondary);
+            position: relative;
+        }
+        .games-section::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
+        }
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+        .section-header h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+            letter-spacing: -0.02em;
+        }
+        .section-header p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 2.5rem;
+        }
+        @media (max-width: 480px) {
+            .games-grid { grid-template-columns: 1fr; }
+        }
+
+        /* ===== Game Card (consistent with sp-card style) ===== */
+        .game-card {
+            display: grid;
+            grid-template-rows: auto 1fr;
+            text-decoration: none;
+            color: var(--text-primary);
+            border-top: 1px solid rgba(255,255,255,0.1);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding: 20px 0 28px;
+            transition: border-color var(--transition-base);
+        }
+        .game-card:hover { border-bottom-color: #f97316; }
+        .game-card:focus-visible {
+            outline: 2px solid #f97316;
+            outline-offset: 4px;
+        }
+        .game-media {
+            aspect-ratio: 16 / 9;
+            overflow: hidden;
+            border-radius: 10px;
+            margin-bottom: 24px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.06);
+        }
+        .game-media img,
+        .game-media svg {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 700ms cubic-bezier(.2,.7,.2,1);
+        }
+        .game-card:hover .game-media img,
+        .game-card:hover .game-media svg {
+            transform: scale(1.04);
+        }
+        .game-body {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .game-meta {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+            font-size: 12px;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+        .game-num { font-variant-numeric: tabular-nums; }
+        .game-tag {
+            background: rgba(249,115,22,0.12);
+            border: 1px solid rgba(249,115,22,0.25);
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            color: #fb923c;
+            font-weight: 600;
+        }
+        .game-name {
+            font-family: 'JetBrains Mono', ui-monospace, monospace;
+            font-weight: 700;
+            font-size: clamp(22px, 2.5vw, 32px);
+            line-height: 1.1;
+            letter-spacing: -0.02em;
+            margin: 0;
+            display: flex;
+            align-items: baseline;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+        .game-name .tld { color: var(--text-muted); font-weight: 500; }
+        .game-desc {
+            margin: 0;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            max-width: 50ch;
+            line-height: 1.55;
+        }
+        .game-features {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 4px;
+        }
+        .game-feature-tag {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            color: #fb923c;
+            background: rgba(249,115,22,0.08);
+            border: 1px solid rgba(249,115,22,0.18);
+            padding: 3px 10px;
+            border-radius: 4px;
+        }
+        .game-cta {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            letter-spacing: 0.04em;
+            color: var(--text-secondary);
+            transition: color var(--transition-base);
+        }
+        .game-arrow {
+            display: inline-block;
+            transition: transform 280ms cubic-bezier(.2,.7,.2,1);
+        }
+        .game-card:hover .game-arrow { transform: translate(3px, -3px); }
+        .game-card:hover .game-name .prefix { color: #f97316; }
+        .game-card:hover .game-cta { color: #f97316; }
+
+        /* ===== Game Card 2 (PvP - different accent) ===== */
+        .game-card--pvp:hover { border-bottom-color: #34d399; }
+        .game-card--pvp .game-tag {
+            background: rgba(52,211,153,0.1);
+            border-color: rgba(52,211,153,0.2);
+            color: #34d399;
+        }
+        .game-card--pvp .game-feature-tag {
+            color: #34d399;
+            background: rgba(52,211,153,0.08);
+            border-color: rgba(52,211,153,0.18);
+        }
+        .game-card--pvp:hover .game-name .prefix { color: #34d399; }
+        .game-card--pvp:hover .game-cta { color: #34d399; }
+
+        /* ===== Coming Soon Card ===== */
+        .coming-soon-card {
+            border-top: 1px dashed rgba(255,255,255,0.1);
+            padding: 20px 0 28px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            gap: 16px;
+            min-height: 200px;
+            opacity: 0.5;
+        }
+        .coming-soon-card .game-media {
+            width: 100%;
+            aspect-ratio: 16/9;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.03);
+            border: 1px dashed rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 0;
+        }
+        .coming-soon-card .game-media svg {
+            width: 48px;
+            height: 48px;
+            opacity: 0.3;
+        }
+        .coming-soon-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+        }
+
+        /* ===== Footer ===== */
+        footer {
+            padding: 3rem 2rem;
+            background: rgba(0, 0, 0, 0.3);
+            text-align: center;
+            border-top: 1px solid var(--border-primary);
+        }
+        footer p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+        footer a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color var(--transition-base);
+        }
+        footer a:hover { color: var(--primary-400); }
+
+        /* ===== Reveal Animation ===== */
+        .reveal {
+            opacity: 0;
+            transform: translateY(24px);
+            transition: opacity 0.7s ease, transform 0.7s ease;
+        }
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ===== Responsive ===== */
+        @media (max-width: 768px) {
+            .navbar-menu-toggle { display: block; }
+            .navbar-nav {
+                display: none;
+                position: fixed;
+                top: 64px; left: 0; right: 0;
+                background: var(--glass-bg-strong);
+                backdrop-filter: blur(20px);
+                flex-direction: column;
+                padding: 1rem;
+                gap: 0.5rem;
+            }
+            .navbar-nav.active { display: flex; }
+            .hero { padding: 7rem 1.5rem 4rem; }
+            .hero h1 { font-size: 2.4rem; }
+            .hero p { font-size: 1.05rem; }
+            .games-section { padding: 4rem 1.5rem 6rem; }
+            .section-header h2 { font-size: 2rem; }
+            .games-grid { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 480px) {
+            .hero-buttons { flex-direction: column; }
+            .hero-buttons .btn { width: 100%; justify-content: center; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Video Background -->
+    <video class="video-bg" autoplay muted loop playsinline poster="https://scirco.cn/assets/images/hero_bg.png">
+        <source src="https://scirco.cn/assets/videos/landing_bg.mp4" type="video/mp4">
+    </video>
+    <div class="video-overlay"></div>
+
+    <!-- Floating Orbs -->
+    <div class="bg-orbs">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="https://scirco.cn/landing.php" class="navbar-brand">scirco<span>.</span>cn</a>
+            <button class="navbar-menu-toggle" onclick="document.querySelector('.navbar-nav').classList.toggle('active')">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+            </button>
+            <div class="navbar-nav">
+                <a href="https://scirco.cn/landing.php" class="nav-link">首页</a>
+                <a href="https://scirco.cn/login.php" class="nav-link">登录</a>
+                <a href="https://scirco.cn/login.php" class="btn btn-primary btn-sm">注册</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <div class="hero-badge">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="22" y1="12" x2="18" y2="12"/><line x1="6" y1="12" x2="2" y2="12"/><line x1="12" y1="6" x2="12" y2="2"/><line x1="12" y1="22" x2="12" y2="18"/></svg>
+                FPS Games Hub
+            </div>
+            <h1>FPS <em>射击游戏</em><br>合集平台</h1>
+            <p>多款 FPS 射击游戏，休闲与竞技兼顾。选择你喜欢的，进入战场，即刻开战。</p>
+            <div class="hero-buttons">
+                <a href="#games" class="btn btn-primary btn-lg">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                    浏览游戏
+                </a>
+                <a href="https://scirco.cn/login.php" class="btn btn-secondary btn-lg">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    注册账号
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Games Section -->
+    <section class="games-section" id="games">
+        <div class="container">
+            <div class="section-header reveal">
+                <h2>选择你的战场</h2>
+                <p>每个游戏都有独特的玩法与挑战</p>
+            </div>
+
+            <div class="games-grid">
+                <!-- Poke Survivors -->
+                <a class="game-card reveal" href="/pokemon-survivors/">
+                    <div class="game-media">
+                        <svg viewBox="0 0 320 180" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Poke Survivors — 宝可梦幸存者" xmlns="http://www.w3.org/2000/svg">
+                            <defs>
+                                <linearGradient id="poke_bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1a0a0a"/><stop offset="1" stop-color="#4a1414"/></linearGradient>
+                            </defs>
+                            <rect width="320" height="180" fill="url(#poke_bg)"/>
+                            <g fill="#f97316" opacity="0.9">
+                                <circle cx="80" cy="90" r="42" fill="#e8e8e8"/>
+                                <path d="M 38 90 L 122 90" stroke="#1a1a1a" stroke-width="5" fill="none"/>
+                                <circle cx="80" cy="90" r="16" fill="#e8e8e8" stroke="#1a1a1a" stroke-width="3"/>
+                                <circle cx="80" cy="90" r="6" fill="#f97316"/>
+                            </g>
+                            <g fill="#fbbf24">
+                                <rect x="180" y="50" width="14" height="14" rx="2"/>
+                                <rect x="210" y="70" width="14" height="14" rx="2" fill="#ef4444"/>
+                                <rect x="240" y="40" width="14" height="14" rx="2" fill="#22c55e"/>
+                                <rect x="260" y="80" width="14" height="14" rx="2" fill="#3b82f6"/>
+                                <rect x="220" y="110" width="14" height="14" rx="2" fill="#a855f7"/>
+                                <rect x="190" y="140" width="14" height="14" rx="2" fill="#eab308"/>
+                            </g>
+                            <g fill="#ffffff" opacity="0.3">
+                                <rect x="30" y="30" width="3" height="3"/>
+                                <rect x="150" y="20" width="3" height="3"/>
+                                <rect x="280" y="25" width="3" height="3"/>
+                                <rect x="200" y="150" width="3" height="3"/>
+                            </g>
+                            <text x="240" y="168" font-family="ui-monospace,monospace" font-size="9" fill="#f97316" opacity="0.7">POKE · SURVIVORS</text>
+                        </svg>
+                    </div>
+                    <div class="game-body">
+                        <div class="game-meta">
+                            <span class="game-num">01</span>
+                            <span class="game-tag">Survival Mode</span>
+                        </div>
+                        <h3 class="game-name"><span class="prefix">pokemon-survivors</span><span class="tld">.scirco.cn</span></h3>
+                        <p class="game-desc">宝可梦风幸存者游戏，自动攻击、技能升级、波次挑战，像素休闲。</p>
+                        <div class="game-features">
+                            <span class="game-feature-tag">自动攻击</span>
+                            <span class="game-feature-tag">技能升级</span>
+                            <span class="game-feature-tag">Boss挑战</span>
+                            <span class="game-feature-tag">像素风格</span>
+                        </div>
+                        <div class="game-cta">开始游戏 <span class="game-arrow" aria-hidden="true">↗</span></div>
+                    </div>
+                </a>
+
+                <!-- PvP Arena -->
+                <a class="game-card game-card--pvp reveal" href="/pvp/">
+                    <div class="game-media">
+                        <svg viewBox="0 0 320 180" preserveAspectRatio="xMidYMid slice" role="img" aria-label="PvP Arena — 像素多人射击" xmlns="http://www.w3.org/2000/svg">
+                            <defs>
+                                <linearGradient id="pvp_bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#0a1a1a"/><stop offset="1" stop-color="#0f1f2e"/></linearGradient>
+                            </defs>
+                            <rect width="320" height="180" fill="url(#pvp_bg)"/>
+                            <g stroke="#34d399" stroke-width="1" fill="#0f1f2e" opacity="0.6">
+                                <rect x="40" y="30" width="60" height="120"/>
+                                <rect x="120" y="30" width="60" height="50"/>
+                                <rect x="200" y="30" width="80" height="120"/>
+                                <rect x="120" y="100" width="60" height="50"/>
+                            </g>
+                            <g>
+                                <circle cx="70" cy="90" r="10" fill="#ef4444" stroke="#fff" stroke-width="2"/>
+                                <circle cx="240" cy="90" r="10" fill="#3b82f6" stroke="#fff" stroke-width="2"/>
+                            </g>
+                            <g stroke="#fbbf24" stroke-width="2" fill="none" opacity="0.8">
+                                <line x1="75" y1="86" x2="235" y2="90" stroke-dasharray="4,4"/>
+                            </g>
+                            <g fill="#fbbf24" opacity="0.9">
+                                <circle cx="155" cy="88" r="3"/>
+                                <circle cx="130" cy="85" r="2"/>
+                                <circle cx="180" cy="92" r="2"/>
+                            </g>
+                            <g fill="#34d399" opacity="0.7">
+                                <rect x="260" y="30" width="8" height="8"/>
+                                <rect x="280" y="50" width="8" height="8"/>
+                                <rect x="260" y="70" width="8" height="8"/>
+                            </g>
+                            <g stroke="#34d399" stroke-width="1" fill="none">
+                                <circle cx="272" cy="50" r="30" stroke-width="1.5" stroke-dasharray="3,3"/>
+                                <circle cx="272" cy="50" r="4" fill="#34d399"/>
+                                <line x1="272" y1="20" x2="272" y2="35" stroke-width="1.5"/>
+                                <line x1="272" y1="65" x2="272" y2="80" stroke-width="1.5"/>
+                                <line x1="242" y1="50" x2="257" y2="50" stroke-width="1.5"/>
+                                <line x1="287" y1="50" x2="302" y2="50" stroke-width="1.5"/>
+                            </g>
+                            <text x="20" y="168" font-family="ui-monospace,monospace" font-size="9" fill="#34d399" opacity="0.6">PVP · ARENA · MULTIPLAYER</text>
+                        </svg>
+                    </div>
+                    <div class="game-body">
+                        <div class="game-meta">
+                            <span class="game-num">02</span>
+                            <span class="game-tag">Arena Shooter</span>
+                        </div>
+                        <h3 class="game-name"><span class="prefix">pvp-arena-shooter</span><span class="tld">.scirco.cn</span></h3>
+                        <p class="game-desc">像素风多人竞技场射击，局域网联机、分屏合作，经典3D视角。</p>
+                        <div class="game-features">
+                            <span class="game-feature-tag">Raycasting 3D</span>
+                            <span class="game-feature-tag">局域网联机</span>
+                            <span class="game-feature-tag">多人对战</span>
+                            <span class="game-feature-tag">分屏合作</span>
+                        </div>
+                        <div class="game-cta">开始游戏 <span class="game-arrow" aria-hidden="true">↗</span></div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Coming Soon placeholder -->
+            <div class="games-grid" style="margin-top: 2.5rem;">
+                <div class="coming-soon-card">
+                    <div class="game-media">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                    </div>
+                    <span class="coming-soon-label">更多游戏 · 敬请期待</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2026 <a href="https://scirco.cn">scirco.cn</a> — FPS 游戏合集平台 · 基于开源项目构建</p>
+    </footer>
+
+    <script>
+        // Navbar mobile toggle
+        document.querySelector('.navbar-menu-toggle')?.addEventListener('click', function() {
+            document.querySelector('.navbar-nav')?.classList.toggle('active');
+        });
+
+        // Scroll reveal
+        const reveals = document.querySelectorAll('.reveal');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+        reveals.forEach(el => observer.observe(el));
+    </script>
+</body>
+</html>
