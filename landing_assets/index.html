@@ -472,6 +472,21 @@
         .game-card--pvp:hover .game-name .prefix { color: #34d399; }
         .game-card--pvp:hover .game-cta { color: #34d399; }
 
+        /* ===== Game Card 3 (Server Survival - Tower Defense) ===== */
+        .game-card--server-survival:hover { border-bottom-color: #8b5cf6; }
+        .game-card--server-survival .game-tag {
+            background: rgba(139,92,246,0.12);
+            border-color: rgba(139,92,246,0.25);
+            color: #a78bfa;
+        }
+        .game-card--server-survival .game-feature-tag {
+            color: #a78bfa;
+            background: rgba(139,92,246,0.08);
+            border-color: rgba(139,92,246,0.18);
+        }
+        .game-card--server-survival:hover .game-name .prefix { color: #8b5cf6; }
+        .game-card--server-survival:hover .game-cta { color: #8b5cf6; }
+
         /* ===== Coming Soon Card ===== */
         .coming-soon-card {
             border-top: 1px dashed rgba(255,255,255,0.1);
@@ -732,16 +747,93 @@
                         <div class="game-cta">开始游戏 <span class="game-arrow" aria-hidden="true">↗</span></div>
                     </div>
                 </a>
-            </div>
 
-            <!-- Coming Soon placeholder -->
-            <div class="games-grid" style="margin-top: 2.5rem;">
-                <div class="coming-soon-card">
+                <!-- Server Survival -->
+                <a class="game-card game-card--server-survival reveal" href="/server-survival/">
                     <div class="game-media">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                        <svg viewBox="0 0 320 180" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Server Survival — 云架构塔防" xmlns="http://www.w3.org/2000/svg">
+                            <defs>
+                                <linearGradient id="ss_bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1a0a2e"/><stop offset="1" stop-color="#0f1a2e"/></linearGradient>
+                                <linearGradient id="ss_tower" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6d28d9"/><stop offset="1" stop-color="#4c1d95"/></linearGradient>
+                            </defs>
+                            <rect width="320" height="180" fill="url(#ss_bg)"/>
+                            <!-- Grid lines -->
+                            <g stroke="#8b5cf6" stroke-width="0.5" opacity="0.15">
+                                <line x1="0" y1="140" x2="320" y2="140"/>
+                                <line x1="0" y1="100" x2="320" y2="100"/>
+                                <line x1="0" y1="60" x2="320" y2="60"/>
+                                <line x1="80" y1="0" x2="80" y2="180"/>
+                                <line x1="160" y1="0" x2="160" y2="180"/>
+                                <line x1="240" y1="0" x2="240" y2="180"/>
+                            </g>
+                            <!-- Server towers -->
+                            <g>
+                                <rect x="45" y="70" width="28" height="70" rx="3" fill="url(#ss_tower)" opacity="0.9"/>
+                                <rect x="49" y="76" width="20" height="5" rx="1" fill="#a78bfa" opacity="0.8"/>
+                                <rect x="49" y="84" width="20" height="5" rx="1" fill="#34d399" opacity="0.6"/>
+                                <rect x="49" y="92" width="20" height="5" rx="1" fill="#a78bfa" opacity="0.4"/>
+                                <circle cx="59" cy="132" r="3" fill="#8b5cf6" opacity="0.7"/>
+                            </g>
+                            <g>
+                                <rect x="100" y="50" width="28" height="90" rx="3" fill="url(#ss_tower)" opacity="0.9"/>
+                                <rect x="104" y="56" width="20" height="5" rx="1" fill="#a78bfa" opacity="0.8"/>
+                                <rect x="104" y="64" width="20" height="5" rx="1" fill="#ef4444" opacity="0.7"/>
+                                <rect x="104" y="72" width="20" height="5" rx="1" fill="#a78bfa" opacity="0.5"/>
+                                <circle cx="114" cy="132" r="3" fill="#8b5cf6" opacity="0.7"/>
+                            </g>
+                            <g>
+                                <rect x="155" y="30" width="28" height="110" rx="3" fill="url(#ss_tower)" opacity="0.9"/>
+                                <rect x="159" y="36" width="20" height="5" rx="1" fill="#fbbf24" opacity="0.9"/>
+                                <rect x="159" y="44" width="20" height="5" rx="1" fill="#a78bfa" opacity="0.7"/>
+                                <rect x="159" y="52" width="20" height="5" rx="1" fill="#34d399" opacity="0.6"/>
+                                <circle cx="169" cy="132" r="3" fill="#8b5cf6" opacity="0.7"/>
+                            </g>
+                            <!-- Enemy waves (dots moving left) -->
+                            <g fill="#ef4444" opacity="0.8">
+                                <circle cx="260" cy="110" r="5"/>
+                                <circle cx="285" cy="120" r="4"/>
+                                <circle cx="300" cy="100" r="4"/>
+                                <circle cx="275" cy="135" r="3"/>
+                            </g>
+                            <!-- Defense laser beams -->
+                            <g stroke="#a78bfa" stroke-width="1.5" opacity="0.6">
+                                <line x1="169" y1="60" x2="260" y2="110" stroke-dasharray="4,3"/>
+                                <line x1="114" y1="80" x2="285" y2="120" stroke-dasharray="4,3"/>
+                                <line x1="59" y1="100" x2="300" y2="100" stroke-dasharray="4,3"/>
+                            </g>
+                            <!-- Floating clouds -->
+                            <g fill="#8b5cf6" opacity="0.12">
+                                <ellipse cx="220" cy="50" rx="40" ry="15"/>
+                                <ellipse cx="240" cy="45" rx="30" ry="12"/>
+                            </g>
+                            <g fill="#3b82f6" opacity="0.1">
+                                <ellipse cx="30" cy="40" rx="35" ry="12"/>
+                                <ellipse cx="50" cy="36" rx="25" ry="10"/>
+                            </g>
+                            <!-- Coins / rewards -->
+                            <g fill="#fbbf24" opacity="0.7">
+                                <circle cx="195" cy="85" r="4"/>
+                                <circle cx="205" cy="95" r="3"/>
+                            </g>
+                            <text x="200" y="168" font-family="ui-monospace,monospace" font-size="9" fill="#a78bfa" opacity="0.6">SERVER · SURVIVAL · TOWER DEFENSE</text>
+                        </svg>
                     </div>
-                    <span class="coming-soon-label">更多游戏 · 敬请期待</span>
-                </div>
+                    <div class="game-body">
+                        <div class="game-meta">
+                            <span class="game-num">03</span>
+                            <span class="game-tag">Tower Defense</span>
+                        </div>
+                        <h3 class="game-name"><span class="prefix">server-survival</span><span class="tld">.scirco.cn</span></h3>
+                        <p class="game-desc">3D 云架构塔防游戏，建造服务器防御墙抵御攻击，升级科技树，守护数据安全。</p>
+                        <div class="game-features">
+                            <span class="game-feature-tag">Three.js 3D</span>
+                            <span class="game-feature-tag">云架构</span>
+                            <span class="game-feature-tag">科技树</span>
+                            <span class="game-feature-tag">波次挑战</span>
+                        </div>
+                        <div class="game-cta">开始游戏 <span class="game-arrow" aria-hidden="true">↗</span></div>
+                    </div>
+                </a>
             </div>
         </div>
     </section>
